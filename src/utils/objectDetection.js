@@ -4,7 +4,8 @@ import { loadGraphModel } from '@tensorflow/tfjs-converter';
 let model;
 
 export const loadModel = async () => {
-  model = await loadGraphModel('https://tfhub.dev/tensorflow/yolov5/1');
+  // Update the model URL to a more accurate version if available
+  model = await loadGraphModel('https://tfhub.dev/tensorflow/efficientdet/lite2/detection/1');
 };
 
 export const detectObjects = async (image) => {
