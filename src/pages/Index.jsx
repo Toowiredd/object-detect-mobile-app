@@ -2,12 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useEffect, useRef } from "react";
 import { detectObjects } from "@/utils/objectDetection";
+import { trackObjects } from "@/utils/objectTracking"; // Import the tracking function
 import { Camera, Settings, HelpCircle } from "lucide-react";
 
 const Index = () => {
   const [cameraActive, setCameraActive] = useState(false);
 
   const [detections, setDetections] = useState([]);
+  const [trackedObjects, setTrackedObjects] = useState([]); // State for tracked objects
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -29,6 +31,8 @@ const Index = () => {
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     const detections = await detectObjects(canvas);
     setDetections(detections);
+    const tracked = trackObjects(detections); // Track objects across frames
+    setTrackedObjects(tracked);
   };
 
   const handleSwitchCamera = () => {
