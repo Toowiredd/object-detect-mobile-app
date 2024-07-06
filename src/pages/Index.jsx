@@ -1,13 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { detectObjects } from "@/utils/objectDetection";
 import { Camera, Settings, HelpCircle } from "lucide-react";
 
 const Index = () => {
   const [cameraActive, setCameraActive] = useState(false);
 
-  const handleCapture = () => {
-    // Logic for capturing image
+  const [detections, setDetections] = useState([]);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    if (cameraActive) {
+      const video = videoRef.current;
+      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+        video.srcObject = stream;
+        video.play();
+      });
+    }
+  }, [cameraActive]);
+
+  const handleCapture = async () => {
+    const video = videoRef.current;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const detections = await detectObjects(canvas);
+    setDetections(detections);
   };
 
   const handleSwitchCamera = () => {
@@ -34,6 +55,7 @@ const Index = () => {
         <div className="relative w-full max-w-md h-64 bg-gray-200 rounded-lg overflow-hidden">
           {cameraActive ? (
             <div className="absolute inset-0 flex items-center justify-center">
+              <video ref={videoRef} className="absolute inset-0 w-full h-full object-cover" />
               <Button variant="outline" size="icon" onClick={handleCapture}>
                 <Camera className="h-6 w-6" />
               </Button>
