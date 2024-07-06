@@ -4,11 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import { detectObjects } from "@/utils/objectDetection";
 import { trackObjects } from "@/utils/objectTracking"; // Import the tracking function
 import { Camera, Settings, HelpCircle, Save } from "lucide-react"; // Import Save icon
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; // Import RadioGroup components
+import { Label } from "@/components/ui/label"; // Import Label component
 
 const Index = () => {
   const [cameraActive, setCameraActive] = useState(false);
   const [detections, setDetections] = useState([]);
   const [trackedObjects, setTrackedObjects] = useState([]); // State for tracked objects
+  const [selectedOption, setSelectedOption] = useState("option1"); // State for radio group
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -97,6 +100,22 @@ const Index = () => {
         <Button variant="outline" size="icon" onClick={handleSaveResults}>
           <Save className="h-6 w-6" />
         </Button>
+      </div>
+      <div className="mb-8">
+        <RadioGroup value={selectedOption} onValueChange={setSelectedOption}>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="option1" id="option1" />
+            <Label htmlFor="option1">Option 1</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="option2" id="option2" />
+            <Label htmlFor="option2">Option 2</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="option3" id="option3" />
+            <Label htmlFor="option3">Option 3</Label>
+          </div>
+        </RadioGroup>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
