@@ -10,10 +10,17 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { CircleUser, Menu, Package2 } from "lucide-react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { navItems } from "../App";
 
 const Layout = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated");
+    navigate("/login");
+  };
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <Sidebar />
@@ -21,7 +28,7 @@ const Layout = () => {
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <MobileSidebar />
           <div className="w-full flex-1">{/* Add nav bar content here! */}</div>
-          <UserDropdown />
+          <UserDropdown onLogout={handleLogout} />
         </header>
         <main className="flex-grow p-4 overflow-auto">
           <Outlet />
@@ -81,7 +88,7 @@ const MobileSidebar = () => (
   </Sheet>
 );
 
-const UserDropdown = () => (
+const UserDropdown = ({ onLogout }) => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <Button variant="secondary" size="icon" className="rounded-full">
@@ -95,7 +102,7 @@ const UserDropdown = () => (
       <DropdownMenuItem>Settings</DropdownMenuItem>
       <DropdownMenuItem>Support</DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem>Logout</DropdownMenuItem>
+      <DropdownMenuItem onClick={onLogout}>Logout</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 );
