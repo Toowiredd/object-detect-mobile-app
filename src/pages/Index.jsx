@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useEffect, useRef } from "react";
-import { detectObjects } from "@/utils/objectDetection";
+import { detectObjects, loadModel } from "@/utils/objectDetection"; // Import loadModel
 import { trackObjects } from "@/utils/objectTracking"; // Import the tracking function
 import { Camera, Settings, HelpCircle, Save, Play, PauseCircle } from "lucide-react"; // Import Save, Play, and PauseCircle icons
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; // Import RadioGroup components
@@ -12,6 +12,7 @@ const Index = () => {
   const [detections, setDetections] = useState([]);
   const [trackedObjects, setTrackedObjects] = useState([]); // State for tracked objects
   const [selectedOption, setSelectedOption] = useState("option1"); // State for radio group
+  const [selectedModel, setSelectedModel] = useState("efficientdet"); // State for selected model
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -39,6 +40,7 @@ const Index = () => {
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    await loadModel(selectedModel); // Load the selected model
     const detections = await detectObjects(canvas);
     setDetections(detections);
     const tracked = trackObjects(detections); // Track objects across frames
@@ -131,6 +133,23 @@ const Index = () => {
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="option3" id="option3" />
             <Label htmlFor="option3">Option 3</Label>
+          </div>
+        </RadioGroup>
+      </div>
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Select Object Detection Model</h2>
+        <RadioGroup value={selectedModel} onValueChange={setSelectedModel}>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="efficientdet" id="efficientdet" />
+            <Label htmlFor="efficientdet">EfficientDet</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="yolov5" id="yolov5" />
+            <Label htmlFor="yolov5">YOLOv5</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="ssd_mobilenet" id="ssd_mobilenet" />
+            <Label htmlFor="ssd_mobilenet">SSD MobileNet</Label>
           </div>
         </RadioGroup>
       </div>
