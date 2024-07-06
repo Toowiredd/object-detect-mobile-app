@@ -3,11 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useEffect, useRef } from "react";
 import { detectObjects } from "@/utils/objectDetection";
 import { trackObjects } from "@/utils/objectTracking"; // Import the tracking function
-import { Camera, Settings, HelpCircle } from "lucide-react";
+import { Camera, Settings, HelpCircle, Save } from "lucide-react"; // Import Save icon
 
 const Index = () => {
   const [cameraActive, setCameraActive] = useState(false);
-
   const [detections, setDetections] = useState([]);
   const [trackedObjects, setTrackedObjects] = useState([]); // State for tracked objects
   const videoRef = useRef(null);
@@ -47,6 +46,18 @@ const Index = () => {
     // Logic for opening help/tutorial
   };
 
+  const handleSaveResults = () => {
+    const results = {
+      detections,
+      trackedObjects,
+      timestamp: new Date().toISOString(),
+    };
+    const savedResults = JSON.parse(localStorage.getItem("detectionResults")) || [];
+    savedResults.push(results);
+    localStorage.setItem("detectionResults", JSON.stringify(savedResults));
+    alert("Detection results saved!");
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="text-center mb-8">
@@ -82,6 +93,9 @@ const Index = () => {
         </Button>
         <Button variant="outline" size="icon" onClick={handleHelp}>
           <HelpCircle className="h-6 w-6" />
+        </Button>
+        <Button variant="outline" size="icon" onClick={handleSaveResults}>
+          <Save className="h-6 w-6" />
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
