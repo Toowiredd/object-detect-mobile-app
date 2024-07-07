@@ -6,6 +6,7 @@ import { trackObjects } from "@/utils/objectTracking"; // Import the tracking fu
 import { Camera, Settings, HelpCircle, Save, Play, PauseCircle } from "lucide-react"; // Import Save, Play, and PauseCircle icons
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; // Import RadioGroup components
 import { Label } from "@/components/ui/label"; // Import Label component
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"; // Import Dialog components
 
 const ObjectDetectionApp = () => {
   const [isActive, setIsActive] = useState(false);
@@ -13,6 +14,8 @@ const ObjectDetectionApp = () => {
   const [trackedObjects, setTrackedObjects] = useState([]); // State for tracked objects
   const [selectedOption, setSelectedOption] = useState("option1"); // State for radio group
   const [selectedModel, setSelectedModel] = useState("efficientdet"); // State for selected model
+  const [showSettingsModal, setShowSettingsModal] = useState(false); // State for settings modal
+  const [showHelpModal, setShowHelpModal] = useState(false); // State for help modal
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -47,16 +50,35 @@ const ObjectDetectionApp = () => {
     setTrackedObjects(tracked);
   };
 
-  const handleSwitchCamera = () => {
-    // Logic for switching camera
+  const handleSwitchCamera = async () => {
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        if (videoDevices.length > 1) {
+          const currentDeviceId = videoRef.current.srcObject.getVideoTracks()[0].getSettings().deviceId;
+          const nextDevice = videoDevices.find(device => device.deviceId !== currentDeviceId);
+          if (nextDevice) {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: nextDevice.deviceId } });
+            videoRef.current.srcObject = stream;
+          } else {
+            alert('No other camera found.');
+          }
+        } else {
+          alert('Only one camera available.');
+        }
+      }
+    } catch (error) {
+      console.error('Error switching camera:', error);
+    }
   };
 
   const handleSettings = () => {
-    // Logic for opening settings
+    setShowSettingsModal(true);
   };
 
   const handleHelp = () => {
-    // Logic for opening help/tutorial
+    setShowHelpModal(true);
   };
 
   const handleSaveResults = () => {
@@ -196,6 +218,28 @@ const ObjectDetectionApp = () => {
       <div className="text-center mt-8">
         <Button variant="primary" size="lg">Get Started</Button>
       </div>
+
+      {/* Settings Modal */}
+      <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Settings</DialogTitle>
+          </DialogHeader>
+          {/* Settings content goes here */}
+          <Button onClick={() => setShowSettingsModal(false)}>Close</Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Help Modal */}
+      <Dialog open={showHelpModal} onOpenChange={setShowHelpModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Help & Tutorial</DialogTitle>
+          </DialogHeader>
+          {/* Help content goes here */}
+          <Button onClick={() => setShowHelpModal(false)}>Close</Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
