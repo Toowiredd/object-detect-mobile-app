@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Home, List } from "lucide-react"; // Import List icon
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Layout from "./layouts/sidebar"; // available: default, navbar, sidebar
-import Index from "./pages/Index.jsx";
+import ObjectDetectionApp from "./pages/Index.jsx";
 import ReviewResults from "./pages/ReviewResults.jsx"; // Import ReviewResults page
 import Login from "./pages/Login.jsx";
 
@@ -43,7 +43,7 @@ const App = () => {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Layout />}>
-              <Route index element={<Index />} />
+              <Route index element={<ObjectDetectionApp />} />
               <Route path="review-results" element={<ReviewResults />} />
             </Route>
           </Routes>

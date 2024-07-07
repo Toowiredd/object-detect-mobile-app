@@ -7,16 +7,16 @@ import { Camera, Settings, HelpCircle, Save, Play, PauseCircle } from "lucide-re
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; // Import RadioGroup components
 import { Label } from "@/components/ui/label"; // Import Label component
 
-const Index = () => {
-  const [cameraActive, setCameraActive] = useState(false);
-  const [detections, setDetections] = useState([]);
+const ObjectDetectionApp = () => {
+  const [isActive, setIsActive] = useState(false);
+  const [detectionResults, setDetectionResults] = useState([]);
   const [trackedObjects, setTrackedObjects] = useState([]); // State for tracked objects
   const [selectedOption, setSelectedOption] = useState("option1"); // State for radio group
   const [selectedModel, setSelectedModel] = useState("efficientdet"); // State for selected model
   const videoRef = useRef(null);
 
   useEffect(() => {
-    if (cameraActive) {
+    if (isActive) {
       const video = videoRef.current;
       navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
         video.srcObject = stream;
@@ -31,7 +31,7 @@ const Index = () => {
         video.srcObject = null;
       }
     }
-  }, [cameraActive]);
+  }, [isActive]);
 
   const handleCapture = async () => {
     const video = videoRef.current;
@@ -42,7 +42,7 @@ const Index = () => {
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     await loadModel(selectedModel); // Load the selected model
     const detections = await detectObjects(canvas);
-    setDetections(detections);
+    setDetectionResults(detections);
     const tracked = trackObjects(detections); // Track objects across frames
     setTrackedObjects(tracked);
   };
@@ -60,15 +60,20 @@ const Index = () => {
   };
 
   const handleSaveResults = () => {
-    const results = {
-      detections,
-      trackedObjects,
-      timestamp: new Date().toISOString(),
-    };
-    const savedResults = JSON.parse(localStorage.getItem("detectionResults")) || [];
-    savedResults.push(results);
-    localStorage.setItem("detectionResults", JSON.stringify(savedResults));
-    alert("Detection results saved!");
+    try {
+      const results = {
+        detectionResults,
+        trackedObjects,
+        timestamp: new Date().toISOString(),
+      };
+      const savedResults = JSON.parse(localStorage.getItem("detectionResults")) || [];
+      savedResults.push(results);
+      localStorage.setItem("detectionResults", JSON.stringify(savedResults));
+      alert("Detection results saved!");
+    } catch (error) {
+      console.error("Error saving detection results:", error);
+      alert("Failed to save detection results.");
+    }
   };
 
   return (
@@ -81,7 +86,7 @@ const Index = () => {
       </div>
       <div className="flex justify-center mb-8">
         <div className="relative w-full max-w-md h-64 bg-gray-200 rounded-lg overflow-hidden">
-          {cameraActive ? (
+          {isActive ? (
             <div className="absolute inset-0 flex items-center justify-center">
               <video ref={videoRef} className="absolute inset-0 w-full h-full object-cover" />
               <Button variant="outline" size="icon" onClick={handleCapture}>
@@ -90,7 +95,7 @@ const Index = () => {
             </div>
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <Button variant="primary" onClick={() => setCameraActive(true)}>
+              <Button variant="primary" onClick={() => setIsActive(true)}>
                 Activate Camera
               </Button>
             </div>
@@ -98,12 +103,12 @@ const Index = () => {
         </div>
       </div>
       <div className="flex justify-center space-x-4 mb-8">
-        {cameraActive ? (
-          <Button variant="outline" size="icon" onClick={() => setCameraActive(false)}>
+        {isActive ? (
+          <Button variant="outline" size="icon" onClick={() => setIsActive(false)}>
             <PauseCircle className="h-6 w-6" />
           </Button>
         ) : (
-          <Button variant="outline" size="icon" onClick={() => setCameraActive(true)}>
+          <Button variant="outline" size="icon" onClick={() => setIsActive(true)}>
             <Play className="h-6 w-6" />
           </Button>
         )}
@@ -195,4 +200,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default ObjectDetectionApp;
