@@ -186,9 +186,9 @@ const ObjectDetectionApp = () => {
             <CardTitle>Feature 1</CardTitle>
           </CardHeader>
           <CardContent>
-            <img src="/placeholder.svg" alt="placeholder" className="mx-auto object-cover w-full h-[200px]" />
+            <img src="/images/new_feature1.jpg" alt="Feature 1" className="mx-auto object-cover w-full h-[200px]" />
             <p className="mt-4">
-              Explore the first feature of our app. It provides amazing benefits and functionalities.
+              Explore the first feature of our app. It provides amazing benefits and functionalities that enhance your experience.
             </p>
           </CardContent>
         </Card>
@@ -197,9 +197,9 @@ const ObjectDetectionApp = () => {
             <CardTitle>Feature 2</CardTitle>
           </CardHeader>
           <CardContent>
-            <img src="/placeholder.svg" alt="placeholder" className="mx-auto object-cover w-full h-[200px]" />
+            <img src="/images/new_feature2.jpg" alt="Feature 2" className="mx-auto object-cover w-full h-[200px]" />
             <p className="mt-4">
-              Discover the second feature of our app. It enhances your experience and productivity.
+              Discover the second feature of our app. It offers advanced tools and capabilities to boost your productivity.
             </p>
           </CardContent>
         </Card>
@@ -208,9 +208,9 @@ const ObjectDetectionApp = () => {
             <CardTitle>Feature 3</CardTitle>
           </CardHeader>
           <CardContent>
-            <img src="/placeholder.svg" alt="placeholder" className="mx-auto object-cover w-full h-[200px]" />
+            <img src="/images/new_feature3.jpg" alt="Feature 3" className="mx-auto object-cover w-full h-[200px]" />
             <p className="mt-4">
-              Learn about the third feature of our app. It offers unique capabilities and advantages.
+              Learn about the third feature of our app. It provides unique insights and analytics to help you make informed decisions.
             </p>
           </CardContent>
         </Card>
